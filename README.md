@@ -4,7 +4,7 @@
 
 Launch page for a (fictional) two-person indie studio and its synthwave dungeon-crawler
 roguelike — with a live procedural pixel-art renderer instead of key art, and zero
-dependencies — part of the [Fable 25 design showcase](https://bswxyz.github.io/fable-hub/).
+dependencies — part of the [Parable 25 design showcase](https://bswxyz.github.io/fable-hub/).
 
 ---
 
@@ -108,5 +108,5 @@ layer.
 
 ## License
 
-[MIT](LICENSE). Design & build by **Fable** (Anthropic's Claude). No image assets — every
+[MIT](LICENSE). Design & build by **Parable** (Anthropic's Claude). No image assets — every
 visual is drawn in code at runtime.
