@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How Overclock was built — the guide</title>
+<meta name="description" content="A walkthrough of Overclock's signature techniques: the procedural canvas pixel-art renderer and the hand-rolled CRT pipeline. Zero dependencies." />
+<meta name="theme-color" content="#0a0812" />
+<meta name="color-scheme" content="dark" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Chakra+Petch:wght@300;400;500;600&family=VT323&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#0a0812;--panel:#140e22;--ink:#e8e4f0;--dim:#a89fc0;--faint:#665e80;--magenta:#ff2ea6;--cyan:#29e6ff;--amber:#ffb02e;--line:rgba(232,228,240,.12);--max:780px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Chakra Petch",system-ui,sans-serif;line-height:1.68;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:9;pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(4,2,10,.2) 0 1px, transparent 1px 3px)}
+body::after{content:"";position:fixed;inset:0;z-index:10;pointer-events:none;
+  background:radial-gradient(115% 90% at 50% 44%, transparent 58%, rgba(2,1,6,.5) 100%)}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.wrap{position:relative;z-index:1;max-width:var(--max);margin:0 auto;padding:clamp(28px,6vw,80px) clamp(18px,5vw,32px)}
+.top{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:3rem;font-family:"VT323",monospace;font-size:1.08rem;letter-spacing:.05em;color:var(--dim)}
+.top a{color:var(--dim)}.top a:hover{color:var(--cyan)}
+.ey{font-family:"Press Start 2P",monospace;font-size:.58rem;letter-spacing:.22em;color:var(--magenta);text-shadow:0 0 12px rgba(255,46,166,.5);display:block;margin-bottom:2.2rem}
+h1{font-weight:600;font-size:clamp(2rem,5.6vw,3.1rem);line-height:1.1;margin-bottom:.7rem;letter-spacing:-.01em}
+h1 em{color:var(--cyan);font-style:normal;text-shadow:0 0 16px rgba(41,230,255,.4)}
+.sub{color:var(--dim);font-size:1.1rem;margin-bottom:3rem;max-width:58ch}
+h2{font-family:"Press Start 2P",monospace;font-size:clamp(.72rem,2vw,.86rem);line-height:1.7;color:var(--ink);margin:3rem 0 1rem;text-shadow:2px 2px 0 rgba(255,46,166,.3)}
+p{color:var(--dim);margin:1rem 0}
+strong{color:var(--ink);font-weight:600}
+em{color:var(--amber);font-style:normal}
+ul{margin:1rem 0 1rem 1.1rem;color:var(--dim)}li{margin:.5rem 0}
+.term{background:#0b0716;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:1.4rem 0;box-shadow:0 18px 44px rgba(0,0,0,.5)}
+.term-bar{display:flex;align-items:center;gap:7px;padding:9px 12px;background:#171027;border-bottom:1px solid var(--line)}
+.term-dot{width:8px;height:8px}
+.td-m{background:var(--magenta)}.td-a{background:var(--amber)}.td-c{background:var(--cyan)}
+.term-name{margin-left:8px;font-family:"VT323",monospace;font-size:.98rem;color:var(--faint)}
+pre{padding:16px 18px;overflow-x:auto;font-family:"VT323",monospace;font-size:1.12rem;line-height:1.5;color:#cfc8e2}
+code{font-family:"VT323",monospace;font-size:1.05em;color:var(--cyan)}
+pre code{color:inherit}
+.rule{height:1px;background:var(--line);margin:3rem 0;border:0}
+.back{display:inline-block;margin-top:2.4rem;font-family:"VT323",monospace;font-size:1.12rem}
+.foot-note{color:var(--faint);font-size:.95rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="../">← OVERCLOCK / dirge protocol</a>
+    <span>THE GUIDE · how it was built</span>
+  </div>
+
+  <span class="ey">[ design showcase · build notes ]</span>
+  <h1>a dungeon drawn from <em>nothing.</em></h1>
+  <p class="sub">Overclock looks like a game capture site, but there isn't a single image file in the
+    repository. Every screenshot, icon and face is drawn at runtime by ~200 lines of canvas code —
+    no framework, no animation library, no build step. Here's how.</p>
+
+  <h2>&gt; the idea</h2>
+  <p>An indie roguelike launch page has one honest advantage over a AAA one: the studio can show
+    its actual craft instead of a cinematic trailer. So the site's pitch <strong>is</strong> the
+    demonstration — the hero "key art" is a live pixel renderer, the screenshots are the same
+    renderer in four palettes, and the patch notes type themselves out in a terminal. If the page
+    itself feels like the game, the wishlist button doesn't need to shout.</p>
+  <p>The layout borrows three shipped patterns (researched on Mobbin): the streaming-service title
+    hero (logo lockup + metadata strip + loud/quiet CTA pair), the store-page "latest updates"
+    version notes promoted to a full devlog section, and the marketplace thumbnail-rail screenshot
+    gallery.</p>
+
+  <h2>&gt; the stack: zero dependencies</h2>
+  <ul>
+    <li><strong>Plain HTML/CSS/JS. No three.js, no GSAP, no bundler.</strong> Deliberate: a
+      two-person pixel-art studio would hand-roll it, so the site does too. Total JS is one file;
+      the only external requests are Google Fonts.</li>
+    <li><strong>Canvas 2D at 192×128</strong>, upscaled by CSS with
+      <code>image-rendering:pixelated</code> — the browser does the chunky upscale for free.</li>
+    <li><strong>Press Start 2P / Chakra Petch / VT323</strong> — the bitmap display face is used
+      only small (it's illegible large), a squarish techno grotesque carries body copy, and the
+      terminal speaks VT323.</li>
+    <li><strong>Two easings:</strong> a smooth settle <code>cubic-bezier(.12,.8,.16,1)</code> and a
+      chunky <code>steps(5,end)</code> — every hover, reveal and blink snaps through frames like a
+      sprite sheet instead of gliding.</li>
+  </ul>
+
+  <h2>&gt; signature #1 — the pixel renderer</h2>
+  <p>One painter function draws every dungeon on the site. It's deterministic: a seeded
+    <em>mulberry32</em> stream decides bricks, cracks, crystals and furniture, so the same seed
+    always produces the same room — at 8 ticks per second, sixty times a minute, without the
+    scene rearranging itself:</p>
+  <div class="term"><div class="term-bar"><span class="term-dot td-m"></span><span class="term-dot td-a"></span><span class="term-dot td-c"></span><span class="term-name">main.js — the seeded stream</span></div>
+  <pre><code>const mulberry32 = (a) => () => { /* deterministic 0..1 stream */ };
+
+// layout, bricks, cracks, crystals: from the SEED stream
+// flames, fog, portal breathing:   from a tick HASH
+const hash = (a, b) => { /* stateless — never disturbs the seed */ };
+
+paintDungeon(ctx, 192, 128, PALETTES.crypt, seed, tick, knight);</code></pre></div>
+  <p>The split matters: anything <strong>structural</strong> reads from the seeded stream, anything
+    <strong>alive</strong> (torch flames, drifting fog dither, the portal glow) reads from a
+    stateless hash of the tick. That's why the room holds still while its torches flicker.</p>
+  <p>Sprites are authored as ASCII maps — a knight is twelve characters wide, and each character
+    indexes a palette:</p>
+  <div class="term"><div class="term-bar"><span class="term-dot td-m"></span><span class="term-dot td-a"></span><span class="term-dot td-c"></span><span class="term-name">main.js — the knight, frame 0</span></div>
+  <pre><code>const K_BODY = [
+  '....PP......',     // P plume (magenta — amber in god mode)
+  '...PHHHH....',     // H helm
+  '..PHHHHHH.S.',     // S sword
+  '..HHVVHH..S.',     // V visor
+  ...
+];
+drawMap(ctx, K_BODY, KNIGHT_COLORS, x, y, flip);</code></pre></div>
+  <p>The walk cycle is three leg frames swapped at 8&nbsp;fps, with a one-pixel bob. The same
+    <code>drawMap</code> draws the feature icons, the platform glyphs and the two founder faces.
+    The four "screenshots" are the same painter with different palettes and seeds — flooded floors
+    get a shimmer band, the furnace gets rising embers, the garden grows dithered vines.</p>
+
+  <h2>&gt; signature #2 — the CRT pipeline</h2>
+  <p>The CRT is layered, cheapest-first, and every layer is plain CSS:</p>
+  <ul>
+    <li><strong>Scanlines:</strong> a fixed overlay of
+      <code>repeating-linear-gradient(0deg, rgba(4,2,10,.22) 0 1px, transparent 1px 3px)</code>,
+      plus a stronger copy scoped inside each bezel. A 5s <code>steps()</code> opacity keyframe
+      adds mains hum.</li>
+    <li><strong>Curvature:</strong> two radial gradients on the screen glass — a sheen at the top,
+      a barrel-shaped darkening at the corners.</li>
+    <li><strong>Power-on:</strong> the hero bezel mounts at <code>scaleY(.004)</code> and snaps
+      open like a tube warming up.</li>
+    <li><strong>Glitch transitions:</strong> two fixed slice-bands with
+      <code>backdrop-filter:hue-rotate()</code> jump via <code>steps()</code> while
+      <code>main</code> jitters ±5px and headings get an RGB-split text-shadow — for 130ms:</li>
+  </ul>
+  <div class="term"><div class="term-bar"><span class="term-dot td-m"></span><span class="term-dot td-a"></span><span class="term-dot td-c"></span><span class="term-name">main.js — the glitch scheduler</span></div>
+  <pre><code>// fires ONLY on scroll-section change, never on focus,
+// never with reduced motion, and never twice within 6s
+if (!armed || reduced() || now - lastGlitch < 6000) continue;
+document.body.classList.add('is-glitching');
+setTimeout(() => document.body.classList.remove('is-glitching'), 140);</code></pre></div>
+
+  <h2>&gt; details that matter</h2>
+  <ul>
+    <li><strong>The devlog is progressive.</strong> The full patch notes live in the HTML, so no-JS
+      visitors read them instantly; JS clears and retypes them only when motion is allowed. Version
+      headers "flush" whole like real log output; items type character-by-character. A complete
+      copy sits in a <code>.sr-only</code> block and the animated layer is
+      <code>aria-hidden</code> — screen readers never hear a half-typed word.</li>
+    <li><strong>Canvases are described, not narrated.</strong> Every canvas is
+      <code>aria-hidden</code> inside a <code>role="img"</code> figure with a written scene
+      description.</li>
+    <li><strong>Reduced motion = CRT off.</strong> Static hero frame, no glitches, no typing, no
+      flicker, no smooth scroll — the scanlines stay, dimmed, because they're texture, not motion.</li>
+    <li><strong>The konami code works.</strong> ↑↑↓↓←→←→BA toggles god mode: the badge appears via
+      <code>role="status"</code>, the knight's plume goes amber, and the HUD grows to six hearts.</li>
+    <li><strong>Counters step at ~14fps</strong> instead of tweening smoothly — quantized updates
+      read as pixel-authentic.</li>
+  </ul>
+
+  <h2>&gt; ship it on github pages</h2>
+  <p>Everything is relative-path and build-free, so deploying is three commands:</p>
+  <div class="term"><div class="term-bar"><span class="term-dot td-m"></span><span class="term-dot td-a"></span><span class="term-dot td-c"></span><span class="term-name">overclock@dirge:~ $</span></div>
+  <pre><code>gh repo create overclock-games --public --source . --push
+gh api --method POST /repos/USER/overclock-games/pages \
+  -f 'source[branch]=main' -f 'source[path]=/'
+# live at https://USER.github.io/overclock-games/ in ~1 min</code></pre></div>
+  <p>A <code>.nojekyll</code> file tells Pages to serve the folder as-is. No pipeline, no CI — the
+    same way the site has no dependencies.</p>
+
+  <hr class="rule" />
+  <p class="foot-note">Overclock is a design-showcase concept — the studio and the game are fictional,
+    the renderer is real. See the repository README for the full demo-vs-real map.</p>
+  <a class="back" href="../">← back to OVERCLOCK</a>
+</div>
+</body>
+</html>

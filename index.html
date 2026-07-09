@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>document.documentElement.classList.add('js')</script>
+<title>OVERCLOCK — DIRGE PROTOCOL, a synthwave dungeon-crawler roguelike</title>
+<meta name="description" content="OVERCLOCK is a two-person indie studio. DIRGE PROTOCOL is our synthwave dungeon-crawler roguelike — procedurally cruel floors, permadeath with a memory, couch co-op. We died 4,217 times so you'd die better. Wishlist now." />
+<meta name="theme-color" content="#0a0812" />
+<meta name="color-scheme" content="dark" />
+<meta property="og:title" content="OVERCLOCK — DIRGE PROTOCOL" />
+<meta property="og:description" content="A synthwave dungeon-crawler roguelike from a two-person studio. We died 4,217 times so you'd die better." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Chakra+Petch:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+<div class="bg-glow" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="tear" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="brand" href="./" aria-label="Overclock Games home">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-word">OVERCLOCK</span>
+  </a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#game">the game</a>
+    <a href="#screens">screens</a>
+    <a href="#devlog">devlog</a>
+    <a href="#studio">studio</a>
+    <a class="nav-cta" href="#runlog">wishlist</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top" data-glitch>
+    <div class="hero-copy">
+      <p class="eyebrow reveal">overclock games // two humans, one spare room</p>
+      <h1 class="logo" aria-label="Dirge Protocol">
+        <span class="line"><span class="logo-word w-dirge">DIRGE</span></span>
+        <span class="line"><span class="logo-word w-proto">PROTOCOL</span></span>
+      </h1>
+      <p class="hero-sub reveal">a synthwave dungeon-crawler where the dungeon remembers you.
+        procedurally cruel floors, a soundtrack that syncs to your descent, and permadeath
+        with a long memory. we died <strong>4,217 times</strong> so you'd die better.</p>
+      <dl class="hero-meta reveal" aria-label="Game facts">
+        <div><dt>genre</dt><dd>roguelike</dd></div>
+        <div><dt>run</dt><dd>~22 min</dd></div>
+        <div><dt>players</dt><dd>1–2 couch</dd></div>
+        <div><dt>launch</dt><dd>2027, when it's done</dd></div>
+      </dl>
+      <div class="hero-actions reveal">
+        <a class="btn btn-primary" href="#runlog"><span aria-hidden="true">+ </span>wishlist now</a>
+        <a class="btn btn-ghost" href="#devlog">watch the devlog <span aria-hidden="true">&gt;&gt;</span></a>
+      </div>
+      <p class="platforms reveal">
+        <svg class="picon" viewBox="0 0 12 12" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="1" width="10" height="7" /><rect x="2" y="2" width="8" height="5" class="pi-screen"/><rect x="4" y="9" width="4" height="1"/><rect x="3" y="10" width="6" height="1"/></svg>
+        <svg class="picon" viewBox="0 0 12 12" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="4" width="10" height="5"/><rect x="2" y="3" width="8" height="1"/><rect x="2" y="5" width="1" height="3" class="pi-screen"/><rect x="1" y="6" width="3" height="1" class="pi-screen"/><rect x="8" y="5" width="1" height="1" class="pi-a"/><rect x="9" y="6" width="1" height="1" class="pi-m"/></svg>
+        <svg class="picon" viewBox="0 0 12 12" shape-rendering="crispEdges" aria-hidden="true"><rect x="2" y="1" width="8" height="10"/><rect x="3" y="2" width="6" height="5" class="pi-screen"/><rect x="3" y="8" width="2" height="2" class="pi-c"/><rect x="7" y="8" width="1" height="1" class="pi-m"/><rect x="8" y="9" width="1" height="1" class="pi-a"/></svg>
+        <span>pc first · console later · handheld eventually</span>
+      </p>
+    </div>
+
+    <div class="hero-crt reveal">
+      <figure class="crt" role="img" aria-label="Pixel-art scene from Dirge Protocol: a small knight patrols a torch-lit dungeon corridor, magenta crystals glowing along the walls, dithered fog drifting across the floor. Drawn live by the site's own renderer.">
+        <div class="crt-screen">
+          <canvas id="heroScene" width="192" height="128" aria-hidden="true"></canvas>
+          <noscript><p class="crt-noscript">the live pixel renderer needs JavaScript — imagine a very small knight in a very rude dungeon.</p></noscript>
+        </div>
+        <figcaption class="crt-label" aria-hidden="true">
+          <span class="crt-led"></span>OVERCLOCK CRT-19 · 192×128 · 8 fps on purpose
+        </figcaption>
+      </figure>
+      <p class="deaths reveal"><span class="deaths-k">deaths logged:</span> <span id="deathCount">4,217</span> <span class="deaths-s">and counting</span></p>
+    </div>
+  </section>
+
+  <!-- ============ THE GAME ============ -->
+  <section id="game" class="game" data-glitch>
+    <div class="section-head">
+      <p class="kicker reveal">[ the game ]</p>
+      <h2 class="reveal">every floor is a fresh mistake.</h2>
+      <p class="lede reveal">dirge protocol is built on four promises. we keep them weekly,
+        in public, in the devlog below.</p>
+    </div>
+
+    <div class="cart-grid">
+      <article class="cart reveal">
+        <canvas class="cart-icon" data-icon="floors" width="16" height="16" aria-hidden="true"></canvas>
+        <h3>procedural floors</h3>
+        <p>the dungeon reshuffles every run. 9 biomes, 40+ room grammars, zero mercy.
+          if you memorize a layout, that's a bug — we patch it.</p>
+      </article>
+      <article class="cart reveal">
+        <canvas class="cart-icon" data-icon="skull" width="16" height="16" aria-hidden="true"></canvas>
+        <h3>permadeath+</h3>
+        <p>death is permanent. your corpse isn't. next run you'll meet whatever killed
+          you — wearing your gear, holding a grudge.</p>
+      </article>
+      <article class="cart reveal">
+        <canvas class="cart-icon" data-icon="synth" width="16" height="16" aria-hidden="true"></canvas>
+        <h3>synth soundtrack</h3>
+        <p>forty minutes of original synthwave that syncs to floor depth.
+          the bass drops when the boss does.</p>
+      </article>
+      <article class="cart reveal">
+        <canvas class="cart-icon" data-icon="coop" width="16" height="16" aria-hidden="true"></canvas>
+        <h3>couch co-op</h3>
+        <p>1–2 players, one screen. friendly fire is off by default.
+          you'll turn it on. we know you.</p>
+      </article>
+    </div>
+
+    <div class="stats reveal" aria-label="Studio numbers">
+      <div class="stat"><span class="s-num" data-to="4217">0</span><span class="s-lbl">playtest deaths</span></div>
+      <div class="stat"><span class="s-num" data-to="132">0</span><span class="s-lbl">builds shipped</span></div>
+      <div class="stat"><span class="s-num" data-to="9">0</span><span class="s-lbl">biomes</span></div>
+      <div class="stat"><span class="s-num" data-to="2">0</span><span class="s-lbl">humans</span></div>
+    </div>
+  </section>
+
+  <!-- ============ SCREENS ============ -->
+  <section id="screens" class="screens" data-glitch>
+    <div class="section-head">
+      <p class="kicker reveal">[ screens ]</p>
+      <h2 class="reveal">shot on an imaginary CRT.</h2>
+      <p class="lede reveal">four floors, four palettes. these aren't images — they're drawn
+        live in your browser by the same renderer as the hero. pick a floor.</p>
+    </div>
+
+    <figure class="shot-viewer reveal" role="img" aria-label="Large pixel-art screenshot of the currently selected floor of Dirge Protocol, rendered inside a CRT bezel.">
+      <div class="crt crt-wide">
+        <div class="crt-screen">
+          <canvas id="shotScene" width="240" height="135" aria-hidden="true"></canvas>
+        </div>
+        <figcaption class="crt-label" aria-hidden="true"><span class="crt-led"></span><span id="shotCaption">floor 01 — neon crypt · captured in-engine</span></figcaption>
+      </div>
+    </figure>
+
+    <div class="shot-rail reveal" role="group" aria-label="Choose a floor to preview">
+      <button class="shot-thumb" type="button" data-shot="0" aria-pressed="true">
+        <canvas width="96" height="54" aria-hidden="true"></canvas><span>floor 01 · neon crypt</span>
+      </button>
+      <button class="shot-thumb" type="button" data-shot="1" aria-pressed="false">
+        <canvas width="96" height="54" aria-hidden="true"></canvas><span>floor 03 · flooded archive</span>
+      </button>
+      <button class="shot-thumb" type="button" data-shot="2" aria-pressed="false">
+        <canvas width="96" height="54" aria-hidden="true"></canvas><span>floor 05 · furnace deck</span>
+      </button>
+      <button class="shot-thumb" type="button" data-shot="3" aria-pressed="false">
+        <canvas width="96" height="54" aria-hidden="true"></canvas><span>floor 07 · signal garden</span>
+      </button>
+    </div>
+    <p class="shot-note reveal">no compositor, no photoshop. view source — the dungeon is ~200 lines of canvas.</p>
+  </section>
+
+  <!-- ============ DEVLOG ============ -->
+  <section id="devlog" class="devlog" data-glitch>
+    <div class="section-head">
+      <p class="kicker reveal">[ devlog ]</p>
+      <h2 class="reveal">patch notes, typed the hard way.</h2>
+      <p class="lede reveal">a build every friday since 2024. here's what shipped lately —
+        straight from the run log.</p>
+    </div>
+
+    <div class="term reveal">
+      <div class="term-bar" aria-hidden="true">
+        <span class="term-dot td-m"></span><span class="term-dot td-a"></span><span class="term-dot td-c"></span>
+        <span class="term-title">overclock@dirge:~/devlog</span>
+      </div>
+      <div class="term-body">
+        <div class="sr-only">
+          Devlog. Version 0.3.1, July 2, 2026, balance: nerfed the rat king — he knows what he did;
+          fixed a bug where death was insufficiently permanent; torches now flicker at 8 frames per
+          second, as nature intended. Version 0.3.0, June 19, 2026, content: new biome, the flooded
+          archive — 14 rooms, 3 new ways to drown; track 07 “chlorine cathedral” shipped — juno says
+          it's her best, she's right. Version 0.2.9, June 5, 2026, bugfix: co-op — player two can no
+          longer sell player one at the shop; fog now renders in front of your regrets, not behind them.
+        </div>
+        <div class="term-text" id="termText" aria-hidden="true">
+          <p class="tl tl-cmd">$ tail -n 14 devlog.txt</p>
+          <p class="tl tl-ver">[v0.3.1] · 2026-07-02 · <span class="tag">balance</span></p>
+          <p class="tl">+ nerfed the rat king. he knows what he did.</p>
+          <p class="tl">+ fixed a bug where death was insufficiently permanent.</p>
+          <p class="tl">+ torches now flicker at 8 fps, as nature intended.</p>
+          <p class="tl tl-gap"></p>
+          <p class="tl tl-ver">[v0.3.0] · 2026-06-19 · <span class="tag">content</span></p>
+          <p class="tl">+ new biome: the flooded archive. 14 rooms. 3 new ways to drown.</p>
+          <p class="tl">+ track 07 "chlorine cathedral" shipped. juno says it's her best. she's right.</p>
+          <p class="tl tl-gap"></p>
+          <p class="tl tl-ver">[v0.2.9] · 2026-06-05 · <span class="tag">bugfix</span></p>
+          <p class="tl">+ co-op: player two can no longer sell player one at the shop.</p>
+          <p class="tl">+ fog now renders in front of your regrets, not behind them.</p>
+          <p class="tl tl-cmd tl-end">$ <span class="cursor"></span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STUDIO ============ -->
+  <section id="studio" class="studio" data-glitch>
+    <div class="section-head">
+      <p class="kicker reveal">[ the studio ]</p>
+      <h2 class="reveal">two people. one rule: ship weekly.</h2>
+    </div>
+    <div class="studio-grid">
+      <p class="studio-copy reveal">overclock is a two-person studio in a spare room that used to be
+        a closet. we started dirge protocol in 2024 with no publisher, no funding round and no
+        roadmap slides — just a friday build and a rule that it ships. the tile renderer on this
+        page is the actual engine's little sibling. the deaths counter is real. the rat king
+        incident is <em>documented</em>.</p>
+      <div class="crew">
+        <div class="crew-card reveal">
+          <canvas class="crew-face" data-face="mara" width="16" height="16" aria-hidden="true"></canvas>
+          <div><h3>mara</h3><p>code · tools · the tile renderer</p></div>
+        </div>
+        <div class="crew-card reveal">
+          <canvas class="crew-face" data-face="juno" width="16" height="16" aria-hidden="true"></canvas>
+          <div><h3>juno</h3><p>art · music · the screaming</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RUN LOG CTA ============ -->
+  <section id="runlog" class="runlog" data-glitch>
+    <div class="runlog-box reveal">
+      <p class="kicker">[ the run log ]</p>
+      <h2>one email a month. mostly gifs.</h2>
+      <p class="lede">wishlisting isn't live until the store page is — so join the run log and
+        we'll ping you the moment it is. build notes, dungeon gifs, the occasional apology.</p>
+      <form id="runlogForm" class="runlog-form" novalidate>
+        <label class="sr-only" for="email">email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" required
+               placeholder="you@somewhere.net" />
+        <button class="btn btn-primary" type="submit">join the run log</button>
+      </form>
+      <p class="runlog-note" id="formNote" aria-live="polite">no spam, no “exciting news”. we're two
+        people — we physically cannot spam you. unsubscribe whenever.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="foot-top">
+    <div>
+      <span class="foot-brand">OVERCLOCK</span>
+      <p class="foot-tag">die better. every run.</p>
+    </div>
+    <div class="foot-links">
+      <a href="#game">the game</a><a href="#screens">screens</a><a href="#devlog">devlog</a><a href="#studio">studio</a><a href="./guide/">guide</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 overclock games — a design-showcase concept, not a real studio.</span>
+    <span class="foot-konami" aria-hidden="true" title="you know what to do">↑ ↑ ↓ ↓ ← → ← → B A</span>
+    <span>Designed &amp; built by Fable · <a href="./guide/">How this was built →</a></span>
+  </div>
+</footer>
+
+<div class="god-badge" id="godBadge" role="status" hidden>
+  <span aria-hidden="true">+ </span>GOD MODE ON -- damage: yes. consequences: no.
+</div>
+
+<script src="./main.js" defer></script>
+</body>
+</html>
