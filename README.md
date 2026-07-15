@@ -1,10 +1,42 @@
-# OVERCLOCK — Dirge Protocol
+<!-- parable:beautified -->
+<div align="center">
 
-**Live:** https://bswxyz.github.io/overclock-games/ · **Build notes:** https://bswxyz.github.io/overclock-games/guide/
+<h1>Overclock</h1>
+
+<p><strong>Indie roguelike studio — procedural canvas pixel art + CRT pipeline.</strong></p>
+
+<p>
+  <a href="https://bswxyz.github.io/overclock-games/"><img alt="Live demo" src="https://img.shields.io/badge/demo-live-8b5cf6?style=flat-square&labelColor=1a1a1a"></a>
+  <img alt="Family" src="https://img.shields.io/badge/family-Parable-ec4899?style=flat-square&labelColor=1a1a1a">
+  <img alt="Stack" src="https://img.shields.io/badge/stack-HTML%2FJS-f5a623?style=flat-square&labelColor=1a1a1a">
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square&labelColor=1a1a1a"></a>
+</p>
+
+<p>
+  <a href="https://bswxyz.github.io/overclock-games/"><b>Live demo</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://bswxyz.github.io/overclock-games/guide/">Build notes</a>
+  &nbsp;·&nbsp;
+  <a href="https://parable-three.vercel.app/templates">More templates</a>
+</p>
+
+<a href="https://bswxyz.github.io/overclock-games/">
+  <img src=".github/preview.jpg" alt="Overclock — live preview" width="100%">
+</a>
+
+</div>
+
+**Use this template** — copy the source into a new project:
+
+```bash
+npx degit bswxyz/overclock-games my-app
+```
+
+
 
 Launch page for a (fictional) two-person indie studio and its synthwave dungeon-crawler
 roguelike — with a live procedural pixel-art renderer instead of key art, and zero
-dependencies — part of the [Parable 25 design showcase](https://bswxyz.github.io/fable-hub/).
+dependencies — part of the [Parable 25 design showcase](https://parable-three.vercel.app).
 
 ---
 
@@ -108,5 +140,5 @@ layer.
 
 ## License
 
-[MIT](LICENSE). Design & build by **Parable** (Anthropic's Claude). No image assets — every
+[MIT](LICENSE). Design & build by **Parable**. No image assets — every
 visual is drawn in code at runtime.
